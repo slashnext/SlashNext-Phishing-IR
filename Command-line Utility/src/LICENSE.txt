@@ -1,0 +1,15 @@
+#############################################################################
+#                                                                           #
+#                       Copyright 2019 SlashNext Inc.                       #
+#                           All Rights Reserved.                            #
+#                                                                           #
+# THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION WHICH IS THE  #
+# PROPERTY OF SLASHNEXT INCORPORATION AND IS SUBJECT TO LICENSE TERMS.      #
+#                                                                           #
+# UNAUTHORIZED COPYING OF THIS FILE, VIA ANY MEDIUM IS STRICTLY PROHIBITED  #
+#                                                                           #
+# PROPRIETARY AND CONFIDENTIAL                                              #
+#                                                                           #
+# AUTHOR: Saadat Abid <saadat.abid.2540@slashnext.com>                      #
+#                                                                           #
+#############################################################################
