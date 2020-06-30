@@ -20,7 +20,7 @@ import os
 import base64
 import pyperclip
 
-from .SlashNextPhishingIR import SlashNextPhishingIR
+from SlashNextPhishingIR import SlashNextPhishingIR
 
 from datetime import datetime
 from pyfiglet import figlet_format
@@ -614,15 +614,15 @@ def get_scan_report_table(response_list, source=0):
     else:
         if source == 1:
             return 'Your Url Scan request is submitted to the cloud and may take up-to 60 seconds to complete.\n'\
-                   'Please check back later using "slashnext-scan-report" action with Scan ID = {} or running the ' \
+                   'Please check back later using "slashnext-scan-report" action with Scan ID = {0} or running the ' \
                    'same "slashnext-url-scan" action one more time'.format(response.get('urlData').get('scanId'))
         elif source == 2:
             return 'Your Url Scan request is submitted to the cloud and is taking longer than expected to complete.\n' \
-                   'Please check back later using "slashnext-scan-report" action with Scan ID = {} or running the ' \
+                   'Please check back later using "slashnext-scan-report" action with Scan ID = {0} or running the ' \
                    'same "slashnext-url-scan-sync" action one more time'.format(response.get('urlData').get('scanId'))
         else:
             return 'Your Url Scan request is submitted to the cloud and is taking longer than expected to complete.\n' \
-                   'Please check back later using "slashnext-scan-report" action with Scan ID = {} one more ' \
+                   'Please check back later using "slashnext-scan-report" action with Scan ID = {0} one more ' \
                    'time'.format(response.get('urlData').get('scanId'))
 
     if len(response_list) == 4:
@@ -639,34 +639,60 @@ def get_scan_report_table(response_list, source=0):
 def get_download_sc_file(response_list, name):
     response = response_list[0]
     if response.get('errorNo') == 0:
-        with open(OUT_DIRECTORY + '/' + name + '.jpeg', 'wb') as file_handle:
-            file_handle.write(base64.b64decode(response.get('scData').get('scBase64')))
+        try:
+            with open(OUT_DIRECTORY + '/' + name + '.jpeg', 'wb') as file_handle:
+                file_handle.write(base64.b64decode(response.get('scData').get('scBase64')))
 
-        return 'JPEG saved as: ' + OUT_DIRECTORY + '/' + name + '.jpeg'
+            return 'JPEG saved as: ' + OUT_DIRECTORY + '/' + name + '.jpeg'
+
+        except PermissionError:
+            return 'Permission denied, please acquire the proper privileges for workspace and retry'
+        except Exception as e:
+            return 'ERROR: {0}'.format(str(e))
+    elif response.get('errorNo') == 1:
+        return 'Your Url Scan request is submitted to the cloud and may take up-to 60 seconds to complete.\n' \
+               'Please check back later using "slashnext-download-screenshot" action with Scan ID = {0}'.format(name)
     else:
-        return 'ERROR: {}'.format(response.get('errorMsg'))
+        return 'ERROR: {0}'.format(response.get('errorMsg'))
 
 
 def get_download_html_file(response_list, name):
     response = response_list[0]
     if response.get('errorNo') == 0:
-        with open(OUT_DIRECTORY + '/' + name + '.html', 'wb') as file_handle:
-            file_handle.write(base64.b64decode(response.get('htmlData').get('htmlBase64')))
+        try:
+            with open(OUT_DIRECTORY + '/' + name + '.html', 'wb') as file_handle:
+                file_handle.write(base64.b64decode(response.get('htmlData').get('htmlBase64')))
 
-        return 'HTML saved as: ' + OUT_DIRECTORY + '/' + name + '.html'
+            return 'HTML saved as: ' + OUT_DIRECTORY + '/' + name + '.html'
+
+        except PermissionError:
+            return 'Permission denied, please acquire the proper privileges for workspace and retry'
+        except Exception as e:
+            return 'ERROR: {0}'.format(str(e))
+    elif response.get('errorNo') == 1:
+        return 'Your Url Scan request is submitted to the cloud and may take up-to 60 seconds to complete.\n' \
+               'Please check back later using "slashnext-download-html" action with Scan ID = {0}'.format(name)
     else:
-        return 'ERROR: {}'.format(response.get('errorMsg'))
+        return 'ERROR: {0}'.format(response.get('errorMsg'))
 
 
 def get_download_text_file(response_list, name):
     response = response_list[0]
     if response.get('errorNo') == 0:
-        with open(OUT_DIRECTORY + '/' + name + '.txt', 'wb') as file_handle:
-            file_handle.write(base64.b64decode(response.get('textData').get('textBase64')))
+        try:
+            with open(OUT_DIRECTORY + '/' + name + '.txt', 'wb') as file_handle:
+                file_handle.write(base64.b64decode(response.get('textData').get('textBase64')))
 
-        return 'Text saved as: ' + OUT_DIRECTORY + '/' + name + '.txt'
+            return 'Text saved as: ' + OUT_DIRECTORY + '/' + name + '.txt'
+        except PermissionError:
+            return 'Permission denied, please acquire the proper privileges for workspace and retry'
+        except Exception as e:
+            return 'ERROR: {0}'.format(str(e))
+    elif response.get('errorNo') == 1:
+        return 'Your Url Scan request is submitted to the cloud and may take up-to 60 seconds to complete.\n' \
+               'Please check back later using "slashnext-download-text" action with Scan ID = {0}'.format(name)
     else:
-        return 'ERROR: {}'.format(response.get('errorMsg'))
+        return 'ERROR: {0}'.format(response.get('errorMsg'))
 
 
 def get_line():
@@ -717,7 +743,7 @@ def prepare_results(action, parameter, details, response_list):
 title = Window(FormattedTextControl(figlet_format('SlashNext')),
                height=6, align=WindowAlign.CENTER, style="class:title")
 
-subtitle = Window(FormattedTextControl('SlashNext Phishing Incident Response Console --- v0.0.4'),
+subtitle = Window(FormattedTextControl('SlashNext Phishing Incident Response Console --- v1.0.0'),
                   height=1, align=WindowAlign.CENTER, style="class:subtitle")
 
 status_sc = TextArea(text="Welcome to SlashNext Phishing Incident Response Console", style="class:output")
@@ -772,17 +798,22 @@ def execute_action():
 
             secondary_action_list = secondary_action_str.strip().split()
             if secondary_action_list[0].strip() == 'dump':
-                if len(secondary_action_list) == 1:
-                    now = datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
-                    with open(DUMP_DIRECTORY + '/dump_' + now + '.txt', 'w+') as file_handle:
-                        file_handle.write(result_output)
-                    result_output += '\n\nDump has been created at ' + DUMP_DIRECTORY + '/dump_' + now + '.txt'
-                elif len(secondary_action_list) == 2:
-                    with open(DUMP_DIRECTORY + '/' + secondary_action_list[1].strip(), 'w+') as file_handle:
-                        file_handle.write(result_output)
-                    result_output += '\n\nDump has been created at ' + DUMP_DIRECTORY + '/' + secondary_action_list[1].strip()
-                else:
-                    result_output += '\n\nSecondary action "dump" does not accept more than one parameter'
+                try:
+                    if len(secondary_action_list) == 1:
+                        now = datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
+                        with open(DUMP_DIRECTORY + '/dump_' + now + '.txt', 'w+') as file_handle:
+                            file_handle.write(result_output)
+                        result_output += '\n\nDump has been created at ' + DUMP_DIRECTORY + '/dump_' + now + '.txt'
+                    elif len(secondary_action_list) == 2:
+                        with open(DUMP_DIRECTORY + '/' + secondary_action_list[1].strip(), 'w+') as file_handle:
+                            file_handle.write(result_output)
+                        result_output += '\n\nDump has been created at ' + DUMP_DIRECTORY + '/' + secondary_action_list[1].strip()
+                    else:
+                        result_output += '\n\nSecondary action "dump" does not accept more than one parameter'
+                except PermissionError:
+                    result_output += '\n\nPermission denied, please acquire the proper privileges for workspace and retry'
+                except Exception as e:
+                    result_output += '\n\nERROR: {0}'.format(str(e))
 
             elif secondary_action_list[0].strip() == 'copy':
                 if len(secondary_action_list) == 1:
@@ -791,7 +822,7 @@ def execute_action():
                 else:
                     result_output += '\n\nSecondary action "copy" does not accept any parameters'
             else:
-                result_output += '\n\nInvalid secondary action i.e. "{}"'.format(secondary_action_list[0].strip())
+                result_output += '\n\nInvalid secondary action i.e. "{0}"'.format(secondary_action_list[0].strip())
 
         result_output += get_line()
         result_output = active_history + result_output
@@ -826,11 +857,16 @@ def do_copy():
 
 
 def do_dump():
-    now = datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
-    with open(DUMP_DIRECTORY + '/dump_' + now + '.txt', 'w+') as file_handle:
-        file_handle.write(output_sc.text)
+    try:
+        now = datetime.now().strftime("%d-%m-%Y-%H-%M-%S")
+        with open(DUMP_DIRECTORY + '/dump_' + now + '.txt', 'w+') as file_handle:
+            file_handle.write(output_sc.text)
 
-    status_sc.text = 'Dump has been created at ' + DUMP_DIRECTORY + '/dump_' + now + '.txt'
+        status_sc.text = 'Dump has been created at ' + DUMP_DIRECTORY + '/dump_' + now + '.txt'
+    except PermissionError:
+        status_sc.text = 'Permission denied, please acquire the proper privileges for workspace and retry'
+    except Exception as e:
+        status_sc.text = 'ERROR: {0}'.format(str(e))
 
 
 def do_conf():

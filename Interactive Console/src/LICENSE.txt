@@ -1,0 +1,12 @@
+############################################################################################################
+#                                                                                                          #
+#                                        Copyright 2019 SlashNext Inc.                                     #
+#                                             All Rights Reserved.                                         #
+#                                                                                                          #
+# Subject to the terms and conditions of SlashNext EULA, SlashNext grants to Customer a non-transferable,  #
+# non-sublicensable, non-exclusive license to use the Software as expressly permitted in accordance with   #
+# Documentation or other specifications published by SlashNext. The Software is solely for Customer's      #
+# internal business purposes. All other rights in the Software are expressly reserved by SlashNext.        #
+#                                                                                                          #
+#                                                                                                          #
+############################################################################################################
