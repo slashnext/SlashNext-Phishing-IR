@@ -112,6 +112,10 @@ slashnext-url-scan -a XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -u https://www.google.com
 ```
 
 ```
+slashnext-url-scan-bulk -a XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -i <input file path>
+```
+
+```
 slashnext-url-scan-sync -a XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -u https://www.google.com -e true -t 30
 ```
 
@@ -138,6 +142,7 @@ slashnext-download-text -a XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -s YYYYYYYYYYYYYYYYY
 1. **slashnext-host-report** - Search in SlashNext cloud database and retrieve a detailed report for a host and associated URL.
 1. **slashnext-host-urls** - Search in SlashNext cloud database and retrieve list of all URLs associated with the specified host.
 1. **slashnext-url-scan** - Perform a real-time URL reputation scan with SlashNext cloud-based SEER Engine.
+1. **slashnext-url-scan-bulk** - Performs bulk of real-time URL scans with SlashNext cloud-based SEER Engine.
 1. **slashnext-url-scan-sync** - Perform a real-time URL scan with SlashNext cloud-based SEER Engine in a blocking mode.
 1. **slashnext-scan-report** - Retrieve URL scan results against a previous scan request.
 1. **slashnext-download-screenshot** - Download webpage screenshot against a previous URL scan request.
@@ -343,6 +348,90 @@ Perform a real-time URL reputation scan with SlashNext cloud-based SEER Engine. 
 <td>If extented_info is true, the system along with URL reputation also downloads forensics data like screenshot, HTML and rendered text.</td>
 
 <td>string</td>
+
+<td></td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+## Action: 'slashnext-url-scan-bulk'
+
+Performs bulk URL scan with the SlashNext cloud-based SEER Engine. The scan results are returned immediately if a URL already exists in the cache. For unknown URLs, a scan request will be sent, and the command will poll periodically to check the scan status and return results immediately when they become available.
+
+### Action Parameters
+
+<table>
+
+<tbody>
+
+<tr class="plain">
+
+<th style="padding-right:5px;">PARAMETER</th>
+
+<th style="padding-right:5px;">REQUIRED</th>
+
+<th style="padding-right:5px;">DESCRIPTION</th>
+
+<th style="padding-right:5px;">TYPE</th>
+
+<th>CONTAINS</th>
+
+</tr>
+
+<tr>
+
+<td>**input**</td>
+
+<td>required</td>
+
+<td>Input file path containing line separated valid URLs.</td>
+
+<td>string</td>
+
+<td><span class="highlight">Valid file as per OS</span></td>
+
+</tr>
+
+<tr>
+
+<td>**output**</td>
+
+<td>optional</td>
+
+<td>Output directory path where scan logs will be stored.</td>
+
+<td>string</td>
+
+<td>Valid directory as per OS</td>
+
+</tr>
+
+<tr>
+
+<td>**poll_interval**</td>
+
+<td>optional</td>
+
+<td>Time interval after which pending scan status is checked, value is in seconds. If no poll_interval value is specified, the default value is 60 seconds.</td>
+
+<td>integer</td>
+
+<td></td>
+
+</tr>
+
+<tr>
+
+<td>**retries**</td>
+
+<td>optional</td>
+
+<td>Total number of times, the scan status is checked for pending scans. If no retries value is specified, the default value is 10.</td>
+
+<td>integer</td>
 
 <td></td>
 

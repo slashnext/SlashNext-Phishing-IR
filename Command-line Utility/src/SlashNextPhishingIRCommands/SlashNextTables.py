@@ -195,6 +195,66 @@ def get_url_scan_table(response_list):
     return get_scan_report_table(response_list, source=1)
 
 
+def get_url_scan_bulk_table(summary, response_list, output_path):
+    lookup = summary.get('lookup', None)
+    data_list = []
+    if lookup:
+        header = ['Lookup Details']
+        data_list.append(header)
+        sub_header = [
+            'Total',
+            'Malicious',
+            'Benign',
+            'API Error',
+            'Invalid',
+            'Live Scan',
+        ]
+        data_list.append(sub_header)
+        data = [
+            lookup.get('total_count'),
+            lookup.get('malicious_count'),
+            lookup.get('benign_count'),
+            lookup.get('error_count'),
+            lookup.get('invalid_count'),
+            lookup.get('submitted_count'),
+        ]
+        data_list.append(data)
+
+        scan = summary.get('scan', None)
+        if scan:
+            header = ['Live Scan Details']
+            data_list.append(header)
+            sub_header = [
+                'Total',
+                'Malicious',
+                'Benign',
+                'API Error',
+                'Pending Scan',
+            ]
+            data_list.append(sub_header)
+            data = [
+                scan.get('total_count'),
+                scan.get('malicious_count'),
+                scan.get('benign_count'),
+                scan.get('error_count'),
+                scan.get('pending_count'),
+            ]
+            data_list.append(data)
+
+    bulk_scan_report = DoubleTable(data_list)
+    bulk_scan_report.padding_left = 1
+    bulk_scan_report.padding_right = 1
+    bulk_scan_report.inner_column_border = True
+    bulk_scan_report.inner_row_border = True
+
+    for response in response_list:
+        result_table = get_url_scan_table([response])
+        with open(output_path + 'final_results.log', 'a+') as fp:
+            fp.writelines(result_table + '\n')
+
+    return bulk_scan_report.table
+
+
 def get_url_scan_sync_table(response_list):
     return get_scan_report_table(response_list, source=2)
 
