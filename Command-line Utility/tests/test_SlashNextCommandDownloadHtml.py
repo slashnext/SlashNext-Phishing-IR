@@ -54,7 +54,7 @@ class TestSlashNextCommandDownloadHtml(unittest.TestCase):
             }
         ]
 
-        self.version = f'\nv1.0.0'
+        self.version = f'\nv1.1.0'
         self.version += f'\nDeveloped by SlashNext, Inc. (support@slashnext.com)\n'
 
         self.usage = f'\n{self.description}\n\n'

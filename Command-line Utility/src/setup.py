@@ -9,7 +9,7 @@ setup(
     name="slashnext-phishing-ir-commands",
     author="Saadat Abid",
     author_email="saadat.abid.2540@slashnext.com",
-    version="1.0.1",
+    version="1.1.0",
     url="https://www.slashnext.com",
     description="SlashNext Phishing Incident Response commands to allow users to perform data enrichment.",
     long_description=long_description,
@@ -34,6 +34,7 @@ setup(
         slashnext-host-reputation=SlashNextPhishingIRCommands.SlashNextCommandHostReputation:run
         slashnext-host-report=SlashNextPhishingIRCommands.SlashNextCommandHostReport:run
         slashnext-host-urls=SlashNextPhishingIRCommands.SlashNextCommandHostUrls:run
+        slashnext-url-reputation=SlashNextPhishingIRCommands.SlashNextCommandUrlReputation:run
         slashnext-url-scan=SlashNextPhishingIRCommands.SlashNextCommandUrlScan:run
         slashnext-url-scan-bulk=SlashNextPhishingIRCommands.SlashNextCommandUrlScanBulk:run
         slashnext-url-scan-sync=SlashNextPhishingIRCommands.SlashNextCommandUrlScanSync:run

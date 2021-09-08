@@ -191,6 +191,92 @@ def get_host_urls_table(response_list):
     return host_urls.table
 
 
+def get_url_reputation_table(response_list):
+    data_list = []
+    header = [
+        'URL',
+        'Type',
+        'Verdict',
+        'Threat Status',
+        'Threat Name',
+        'Threat Type',
+        'First Seen',
+        'Last Seen',
+    ]
+    data_list.append(header)
+    response = response_list[0]
+
+    normalize_msg = ''
+    if response.get('normalizeData').get('normalizeStatus') == 1:
+        normalize_msg = response.get('normalizeData').get('normalizeMessage') + '\n'
+
+    url = response.get('urlData')
+    threat_data = url.get('threatData')
+    data = [
+        url.get('url'),
+        'Scanned URL',
+        threat_data.get('verdict'),
+        threat_data.get('threatStatus'),
+        threat_data.get('threatName'),
+        threat_data.get('threatType'),
+        threat_data.get('firstSeen'),
+        threat_data.get('lastSeen'),
+    ]
+    data_list.append(data)
+
+    if url.get('finalUrl') is not None:
+        data = [
+            url.get('finalUrl'),
+            'Final URL',
+            threat_data.get('verdict'),
+            threat_data.get('threatStatus'),
+            '-',
+            '-',
+            '-',
+            '-',
+        ]
+        data_list.append(data)
+
+    if url.get('landingUrl') is not None:
+        landing_url = url.get('landingUrl')
+        threat_data = landing_url.get('threatData')
+        data = [
+            landing_url.get('url'),
+            'Redirected URL',
+            threat_data.get('verdict'),
+            threat_data.get('threatStatus'),
+            threat_data.get('threatName'),
+            threat_data.get('threatType'),
+            threat_data.get('firstSeen'),
+            threat_data.get('lastSeen'),
+        ]
+        data_list.append(data)
+
+    url_reputation = DoubleTable(data_list)
+    url_reputation.padding_left = 1
+    url_reputation.padding_right = 1
+    url_reputation.inner_column_border = True
+    url_reputation.inner_row_border = True
+
+    for i, data in enumerate(data_list):
+        if i > 0:
+            wrapped_url = '\n'.join(wrap(data[0], 35))
+            wrapped_t = '\n'.join(wrap(data[1], 10))
+            wrapped_tn = '\n'.join(wrap(data[4], 12))
+            wrapped_tt = '\n'.join(wrap(data[5], 12))
+            wrapped_fs = '\n'.join(wrap(data[6], 12))
+            wrapped_ls = '\n'.join(wrap(data[7], 12))
+
+            url_reputation.table_data[i][0] = wrapped_url
+            url_reputation.table_data[i][1] = wrapped_t
+            url_reputation.table_data[i][4] = wrapped_tn
+            url_reputation.table_data[i][5] = wrapped_tt
+            url_reputation.table_data[i][6] = wrapped_fs
+            url_reputation.table_data[i][7] = wrapped_ls
+
+    return normalize_msg + url_reputation.table
+
+
 def get_url_scan_table(response_list):
     return get_scan_report_table(response_list, source=1)
 

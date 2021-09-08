@@ -18,6 +18,7 @@ from .SlashNextApiQuota import SlashNextApiQuota
 from .SlashNextHostReputation import SlashNextHostReputation
 from .SlashNextHostReport import SlashNextHostReport
 from .SlashNextHostUrls import SlashNextHostUrls
+from .SlashNextUrlReputation import SlashNextUrlReputation
 from .SlashNextUrlScan import SlashNextUrlScan
 from .SlashNextUrlScanBulk import SlashNextUrlScanBulk
 from .SlashNextUrlScanSync import SlashNextUrlScanSync
@@ -27,7 +28,7 @@ from .SlashNextDownloadHtml import SlashNextDownloadHtml
 from .SlashNextDownloadText import SlashNextDownloadText
 
 # Version string
-__version__ = "1.0.1"
+__version__ = "1.1.0"
 
 # Version tuple.
 VERSION = tuple(__version__.split("."))
@@ -39,6 +40,7 @@ __all__ = [
     "SlashNextHostReputation",
     "SlashNextHostReport",
     "SlashNextHostUrls",
+    "SlashNextUrlReputation",
     "SlashNextUrlScan",
     "SlashNextUrlScanBulk",
     "SlashNextUrlScanSync",

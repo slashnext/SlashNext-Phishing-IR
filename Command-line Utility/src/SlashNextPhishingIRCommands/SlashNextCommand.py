@@ -29,7 +29,7 @@ class SlashNextCommand(metaclass=ABCMeta):
 
         :param snx_action: An instance of SlashNextAction class.
         """
-        self.__version = f'\nv1.0.1'
+        self.__version = f'\nv1.1.0'
         self.__version += f'\nDeveloped by SlashNext, Inc. (support@slashnext.com)\n'
 
         self.__usage = f'\n{snx_action.description}\n\n'

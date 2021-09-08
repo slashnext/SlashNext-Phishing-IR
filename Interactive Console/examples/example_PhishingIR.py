@@ -48,6 +48,13 @@ if pir_status == 'ok':
         else:
             print('slashnext-host-reputation action execution failed due to "{}"'.format(pir_details))
 
+        # Checking if the action 'slashnext-url-reputation' executed successfully
+        pir_status, pir_details, response_list = phishing_ir.execute('slashnext-url-reputation url=https://google.com')
+        if pir_status == 'ok':
+            print('slashnext-url-reputation action execution done and received response = {}'.format(response_list))
+        else:
+            print('slashnext-url-reputation action execution failed due to "{}"'.format(pir_details))
+
     else:
         print('SlashNext cloud connectivity failed due to "{}"'.format(pir_details))
 

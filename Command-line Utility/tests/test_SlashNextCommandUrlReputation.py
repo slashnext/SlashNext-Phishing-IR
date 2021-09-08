@@ -9,18 +9,18 @@
 #
 
 """
-Created on Feb 04, 2020
+Created on August 06, 2021
 
 @author: Saadat Abid
 """
 import unittest
 from unittest.mock import patch, Mock
-from src.SlashNextPhishingIRCommands.SlashNextCommandHostReputation import SlashNextCommandHostReputation
+from src.SlashNextPhishingIRCommands.SlashNextCommandUrlReputation import SlashNextCommandUrlReputation
 
 
-class TestSlashNextCommandHostReputation(unittest.TestCase):
+class TestSlashNextCommandUrlReputation(unittest.TestCase):
     """
-    This class implements the positive tests for SlashNextCommandHostReputation class.
+    This class implements the positive tests for SlashNextCommandUrlReputation class.
     """
 
     @classmethod
@@ -29,7 +29,7 @@ class TestSlashNextCommandHostReputation(unittest.TestCase):
         This shall be invoked only once at the start of the tests execution contained within this class.
         """
         print('\n─────────────────────────────────────────────────────────────────────────────────────────')
-        print('Starting the execution of tests for class "SlashNextCommandHostReputation" with valid set of inputs.')
+        print('Starting the execution of tests for class "SlashNextCommandUrlReputation" with valid set of inputs.')
         print('─────────────────────────────────────────────────────────────────────────────────────────')
 
     def setUp(self):
@@ -41,16 +41,15 @@ class TestSlashNextCommandHostReputation(unittest.TestCase):
         # Set of valid inputs
         self.api_key = 'this_is_a_valid_api_key'
         self.base_url = 'https://oti.slashnext.cloud/api'
-        self.host = 'www.google.com'
+        self.url = 'https://google.com/'
 
         # Set of valid expected outputs
-        self.name = 'slashnext-host-reputation'
-        self.description = 'This action queries the SlashNext cloud database and retrieves the reputation of a host.'
+        self.name = 'slashnext-url-reputation'
+        self.description = 'This action queries the SlashNext cloud database and retrieves the reputation of a URL.'
         self.parameters = [
             {
-                'parameter': 'host',
-                'description': 'The host to look up in the SlashNext Threat Intelligence database. '
-                               'Can be either a domain name or an IPv4 address.'
+                'parameter': 'url',
+                'description': 'The URL to look up in the SlashNext Threat Intelligence database.'
             }
         ]
 
@@ -74,134 +73,133 @@ class TestSlashNextCommandHostReputation(unittest.TestCase):
         self.usage += f' -H   --help             Prints this help/usage.\n'
         self.usage += f'\nDeveloped by SlashNext, Inc. (support@slashnext.com)\n'
 
-        self.api_url = 'https://oti.slashnext.cloud/api/oti/v1/host/reputation'
-        self.api_data = {
+        self.api_url_reputation = 'https://oti.slashnext.cloud/api/oti/v1/url/reputation'
+        self.api_data_reputation = {
             'authkey': self.api_key,
-            'host': self.host
+            'url': self.url
         }
-        self.reputation_response = {
+        self.url_reputation_response = {
             "errorNo": 0,
             "errorMsg": "Success",
-            "threatData": {
-                "verdict": "Benign",
-                "threatStatus": "N/A",
-                "threatName": "N/A",
-                "threatType": "N/A",
-                "firstSeen": "12-10-2020 13:04:17 UTC",
-                "lastSeen": "01-13-2020 11:18:15 UTC"
+            "urlData": {
+                "url": "https://google.com/",
+                "threatData": {
+                    "verdict": "Benign",
+                    "threatStatus": "N/A",
+                    "threatName": "N/A",
+                    "threatType": "N/A",
+                    "firstSeen": "08-27-2019 10:32:19 UTC",
+                    "lastSeen": "08-27-2019 12:34:52 UTC"
+                }
+            },
+            "normalizeData": {
+                "normalizeStatus": 0,
+                "normalizeMessage": ""
             }
         }
 
-        self.host_reputation_command = SlashNextCommandHostReputation()
+        self.url_reputation_command = SlashNextCommandUrlReputation()
 
     def test_usage(self):
         """
-        Test the results of usage property of class SlashNextCommandHostReputation.
+        Test the results of usage property of class SlashNextCommandUrlReputation.
         """
         print(f'{self.test_usage.__name__}'
-              f': Executing unit test for property "usage" of class "SlashNextCommandHostReputation".')
+              f': Executing unit test for property "usage" of class "SlashNextCommandUrlReputation".')
 
-        self.assertEqual(self.host_reputation_command.usage, self.usage)
+        self.assertEqual(self.url_reputation_command.usage, self.usage)
 
     def test_version(self):
         """
-        Test the results of version property of class SlashNextCommandHostReputation.
+        Test the results of version property of class SlashNextCommandUrlReputation.
         """
         print(f'{self.test_version.__name__}'
-              f': Executing unit test for property "version" of class "SlashNextCommandHostReputation".')
+              f': Executing unit test for property "version" of class "SlashNextCommandUrlReputation".')
 
-        self.assertEqual(self.host_reputation_command.version, self.version)
+        self.assertEqual(self.url_reputation_command.version, self.version)
 
     def test_execution(self):
         """
-        Test the results of execution function of class SlashNextCommandHostReputation.
+        Test the results of execution function of class SlashNextCommandUrlReputation.
         """
         print(f'{self.test_execution.__name__}'
-              f': Executing unit test for function "execution" of class "SlashNextCommandHostReputation".')
+              f': Executing unit test for function "execution" of class "SlashNextCommandUrlReputation".')
 
         with patch('requests.request', autospec=True, spec_set=True) as mocked_request:
-            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.reputation_response)
+            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.url_reputation_response)
 
-            self.host_reputation_command.execution(argv=['-a', self.api_key,
-                                                         '-h', self.host])
+            self.url_reputation_command.execution(argv=['-a', self.api_key,
+                                                  '-u', self.url])
 
             mocked_request.assert_called_with('POST',
-                                              url=self.api_url,
-                                              data=self.api_data,
+                                              url=self.api_url_reputation,
+                                              data=self.api_data_reputation,
                                               timeout=300)
 
-        with patch('requests.request', autospec=True, spec_set=True) as mocked_request:
-            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.reputation_response)
+            self.assertEqual(mocked_request.call_count, 1)
 
-            self.host_reputation_command.execution(argv=['-a', self.api_key,
-                                                         '-b', 'https://test/api',
-                                                         '-h', self.host])
+        with patch('requests.request', autospec=True, spec_set=True) as mocked_request:
+            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.url_reputation_response)
+
+            self.url_reputation_command.execution(argv=['--api_key', self.api_key,
+                                                        '--base_url', self.base_url,
+                                                        '--url', self.url])
 
             mocked_request.assert_called_with('POST',
-                                              url='https://test/api/oti/v1/host/reputation',
-                                              data=self.api_data,
+                                              url=self.api_url_reputation,
+                                              data=self.api_data_reputation,
                                               timeout=300)
 
-        with patch('requests.request', autospec=True, spec_set=True) as mocked_request:
-            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.reputation_response)
-
-            self.host_reputation_command.execution(argv=['--api_key', self.api_key,
-                                                         '--base_url', self.base_url,
-                                                         '--host', self.host])
-
-            mocked_request.assert_called_with('POST',
-                                              url=self.api_url,
-                                              data=self.api_data,
-                                              timeout=300)
+            self.assertEqual(mocked_request.call_count, 1)
 
         with patch('requests.request', autospec=True, spec_set=True) as mocked_request:
-            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.reputation_response)
+            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.url_reputation_response)
 
-            self.host_reputation_command.execution(argv=['-V'])
+            self.url_reputation_command.execution(argv=['-V'])
 
             mocked_request.assert_not_called()
 
         with patch('requests.request', autospec=True, spec_set=True) as mocked_request:
-            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.reputation_response)
+            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.url_reputation_response)
 
-            self.host_reputation_command.execution(argv=['-H'])
-
-            mocked_request.assert_not_called()
-
-        with patch('requests.request', autospec=True, spec_set=True) as mocked_request:
-            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.reputation_response)
-
-            self.host_reputation_command.execution(argv=['-a', self.api_key])
+            self.url_reputation_command.execution(argv=['-H'])
 
             mocked_request.assert_not_called()
 
         with patch('requests.request', autospec=True, spec_set=True) as mocked_request:
-            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.reputation_response)
+            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.url_reputation_response)
 
-            self.host_reputation_command.execution(argv=['--invalid', 'Wrong Option'])
+            self.url_reputation_command.execution(argv=['-a', self.api_key])
+
+            mocked_request.assert_not_called()
+
+        with patch('requests.request', autospec=True, spec_set=True) as mocked_request:
+            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.url_reputation_response)
+
+            self.url_reputation_command.execution(argv=['--invalid', 'Wrong Option'])
 
             mocked_request.assert_not_called()
 
         # Invalid key
         self.api_key = 'this_is_an_invalid_api_key'
-        self.api_data = {
+        self.api_data_reputation = {
             'authkey': self.api_key,
-            'host': self.host
+            'url': self.url
         }
-        self.reputation_response = {
+        self.url_reputation_response = {
             "errorNo": 7002,
             "errorMsg": "The system is unable to authenticate your request, please provide a valid API key."
         }
 
         with patch('requests.request', autospec=True, spec_set=True) as mocked_request:
-            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.reputation_response)
+            mocked_request.return_value = Mock(status_code=200, ok=True, json=lambda: self.url_reputation_response)
 
-            self.host_reputation_command.execution(argv=['-a', self.api_key,
-                                                         '-h', self.host])
+            self.url_reputation_command.execution(argv=['-a', self.api_key,
+                                                  '-u', self.url])
 
             mocked_request.assert_called_with('POST',
-                                              url=self.api_url,
-                                              data=self.api_data,
+                                              url=self.api_url_reputation,
+                                              data=self.api_data_reputation,
                                               timeout=300)
 
     def tearDown(self):
@@ -216,7 +214,7 @@ class TestSlashNextCommandHostReputation(unittest.TestCase):
         This shall be invoked only once at the end of the tests execution contained within this class.
         """
         print('\n\n─────────────────────────────────────────────────────────────────────────────────────────')
-        print('Finished the execution of tests for class "SlashNextCommandHostReputation" with valid set of inputs.')
+        print('Finished the execution of tests for class "SlashNextCommandUrlReputation" with valid set of inputs.')
         print('─────────────────────────────────────────────────────────────────────────────────────────\n')
 
 

@@ -19,6 +19,7 @@ from .SlashNextApiQuota import SlashNextApiQuota
 from .SlashNextHostReputation import SlashNextHostReputation
 from .SlashNextHostReport import SlashNextHostReport
 from .SlashNextHostUrls import SlashNextHostUrls
+from .SlashNextUrlReputation import SlashNextUrlReputation
 from .SlashNextUrlScan import SlashNextUrlScan
 from .SlashNextUrlScanSync import SlashNextUrlScanSync
 from .SlashNextScanReport import SlashNextScanReport
@@ -51,6 +52,7 @@ class SlashNextPhishingIR(object):
         self.__host_reputation = None
         self.__host_report = None
         self.__host_urls = None
+        self.__url_reputation = None
         self.__url_scan = None
         self.__url_scan_sync = None
         self.__scan_report = None
@@ -96,6 +98,7 @@ class SlashNextPhishingIR(object):
         self.__host_reputation = SlashNextHostReputation(self.api_key, self.base_url)
         self.__host_report = SlashNextHostReport(self.api_key, self.base_url)
         self.__host_urls = SlashNextHostUrls(self.api_key, self.base_url)
+        self.__url_reputation = SlashNextUrlReputation(self.api_key, self.base_url)
         self.__url_scan = SlashNextUrlScan(self.api_key, self.base_url)
         self.__url_scan_sync = SlashNextUrlScanSync(self.api_key, self.base_url)
         self.__scan_report = SlashNextScanReport(self.api_key, self.base_url)
@@ -166,6 +169,7 @@ class SlashNextPhishingIR(object):
         action_list.append(self.__host_reputation.name)
         action_list.append(self.__host_report.name)
         action_list.append(self.__host_urls.name)
+        action_list.append(self.__url_reputation.name)
         action_list.append(self.__url_scan.name)
         action_list.append(self.__url_scan_sync.name)
         action_list.append(self.__scan_report.name)
@@ -192,6 +196,8 @@ class SlashNextPhishingIR(object):
             return self.__host_report.help
         elif action_lower == 'slashnext-host-urls':
             return self.__host_urls.help
+        elif action_lower == 'slashnext-url-reputation':
+            return self.__url_reputation.help
         elif action_lower == 'slashnext-url-scan':
             return self.__url_scan.help
         elif action_lower == 'slashnext-url-scan-sync':
@@ -325,6 +331,24 @@ class SlashNextPhishingIR(object):
 
             if details.lower() == 'success':
                 return 'ok', self.__url_scan.title, response_list
+            else:
+                return 'error', details, response_list
+
+    def __execute_url_reputation(self, action_str_list):
+        """
+        Execute the URL Reputation action with the given parameters after validating the input 'action_str_list'.
+
+        :param action_str_list: List of action string components.
+        :return: Status of action execution and list of SlashNext API response(s).
+        """
+        if len(action_str_list) != 2 or action_str_list[1].startswith('url=') is False:
+            return 'error', 'Invalid Request! Please verify request parameters and try again', \
+                   self.__url_reputation.parameters
+        else:
+            details, response_list = self.__url_reputation.execution(url=action_str_list[1][4:])
+
+            if details.lower() == 'success':
+                return 'ok', self.__url_reputation.title, response_list
             else:
                 return 'error', details, response_list
 
@@ -476,6 +500,9 @@ class SlashNextPhishingIR(object):
 
             elif action == 'slashnext-host-urls':
                 return self.__execute_host_urls(action_str_list)
+
+            elif action == 'slashnext-url-reputation':
+                return self.__execute_url_reputation(action_str_list)
 
             elif action == 'slashnext-url-scan':
                 return self.__execute_url_scan(action_str_list)
